@@ -8,9 +8,9 @@ fun SearchedArticleDto.toArticle(): Article {
         id = this.source.id ?: this.url,
         author = this.author ?: "Unknown",
         title = this.title,
-        description = this.description,
+        description = this.description ?: "", // Handle null description
         url = this.url,
-        urlToImage = this.urlToImage,
+        urlToImage = if (this.urlToImage.isNullOrBlank()) null else this.urlToImage, // Better null handling
         publishedAt = this.publishedAt
     )
 }

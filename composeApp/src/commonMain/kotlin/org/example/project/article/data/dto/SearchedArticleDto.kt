@@ -11,4 +11,5 @@ data class SearchedArticleDto(
     val url: String,
     val urlToImage: String? = null,
     val publishedAt: String,
+    val content: String? = null
 )

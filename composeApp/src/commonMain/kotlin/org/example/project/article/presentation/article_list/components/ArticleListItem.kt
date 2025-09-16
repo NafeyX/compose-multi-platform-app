@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import org.example.project.article.domain.Article
 import org.example.project.core.presentation.LightBlue
@@ -44,7 +45,7 @@ fun ArticleListItem(
     article: Article,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     Surface(
         shape = RoundedCornerShape(32.dp),
         modifier = modifier.clickable(onClick = onClick),
@@ -57,80 +58,117 @@ fun ArticleListItem(
                 .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ){
+        ) {
+            // Image Box
             Box(
                 modifier = Modifier.height(100.dp),
                 contentAlignment = Alignment.Center
-            ){
-                var imageLoadResult by remember {
-                    mutableStateOf<Result<Painter>?>(null)
-                }
-                val painter = rememberAsyncImagePainter(
-                    model = article.urlToImage,
-                    onSuccess = {
-                        if(it.painter.intrinsicSize.width > 1 && it.painter.intrinsicSize.height > 1) {
-                            Result.success(it.painter)
-                        } else {
-                            Result.failure(Exception("Invalid image size"))
+            ) {
+                if (article.urlToImage.isNullOrBlank()) {
+                    // Show placeholder if no image URL
+                    Image(
+                        painter = painterResource(Res.drawable.article_error_2),
+                        contentDescription = article.title,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .aspectRatio(
+                                ratio = 0.65f,
+                                matchHeightConstraintsFirst = true
+                            )
+                    )
+                } else {
+                    var isLoading by remember { mutableStateOf(true) }
+                    var isError by remember { mutableStateOf(false) }
+
+                    val painter = rememberAsyncImagePainter(
+                        model = article.urlToImage,
+                        onSuccess = {
+                            isLoading = false
+                            isError = false
+                        },
+                        onError = {
+                            isLoading = false
+                            isError = true
+                        },
+                        onLoading = {
+                            isLoading = true
+                            isError = false
                         }
-                    },
-                    onError = {
-                        it.result.throwable.printStackTrace()
-                        imageLoadResult = Result.failure(it.result.throwable)
-                    }
-                )
-                when(val result = imageLoadResult){
-                    null -> {
-                        CircularProgressIndicator()
-                    }
-                    else -> {
-                        Image(
-                            painter = if(result.isSuccess) {
-                                painter
-                            } else {
-                                painterResource(Res.drawable.article_error_2)
-                            },
-                            contentDescription = article.title,
-                            contentScale = if(result.isSuccess) {
-                                ContentScale.Crop
-                            } else {
-                                ContentScale.Fit
-                            },
-                            modifier = Modifier
-                                .aspectRatio(
-                                    ratio = 0.65f,
-                                    matchHeightConstraintsFirst = true
-                                )
-                        )
+                    )
+
+                    when {
+                        isLoading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                        else -> {
+                            Image(
+                                painter = if (isError) {
+                                    painterResource(Res.drawable.article_error_2)
+                                } else {
+                                    painter
+                                },
+                                contentDescription = article.title,
+                                contentScale = if (isError) {
+                                    ContentScale.Fit
+                                } else {
+                                    ContentScale.Crop
+                                },
+                                modifier = Modifier
+                                    .aspectRatio(
+                                        ratio = 0.65f,
+                                        matchHeightConstraintsFirst = true
+                                    )
+                            )
+                        }
                     }
                 }
             }
+
+            // Text Content
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f),
-                verticalArrangement = Arrangement.Center
-            ){
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                // Title - Make sure it's prominent
                 Text(
                     text = article.title,
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    maxLines = 3, // Increased from 2
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurface // Ensure proper color
                 )
-                article.author.let { author ->
+
+                // Author
+                if (article.author.isNotBlank() && article.author != "Unknown") {
                     Text(
-                        text = author,
-                        style = MaterialTheme.typography.bodyLarge,
+                        text = article.author,
+                        style = MaterialTheme.typography.bodySmall, // Changed from bodyLarge
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+                }
+
+                // Description - Only show if title is short
+                if (!article.description.isNullOrBlank() && article.title.length < 50) {
+                    Text(
+                        text = article.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
                 }
             }
+
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                modifier = Modifier
-                    .size(36.dp)
+                modifier = Modifier.size(36.dp)
             )
         }
     }

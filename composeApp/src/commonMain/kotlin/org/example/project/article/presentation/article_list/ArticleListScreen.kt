@@ -93,6 +93,7 @@ private fun ArticleListScreen(
             .background(DarkBlue),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(24.dp))
         ArticleSearchBar(
             searchQuery = state.searchQuery,
             onSearchQueryChange = {
