@@ -33,7 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
-import org.example.project.article.data.Article
+import org.example.project.article.domain.Article
 import org.example.project.core.presentation.LightBlue
 import org.jetbrains.compose.resources.painterResource
 import third_cmp.composeapp.generated.resources.Res
@@ -117,9 +117,9 @@ fun ArticleListItem(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                article.description?.let { description ->
+                article.author.let { author ->
                     Text(
-                        text = description,
+                        text = author,
                         style = MaterialTheme.typography.bodyLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

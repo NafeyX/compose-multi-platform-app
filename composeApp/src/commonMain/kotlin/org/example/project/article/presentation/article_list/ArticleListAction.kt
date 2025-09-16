@@ -1,6 +1,6 @@
 package org.example.project.article.presentation.article_list
 
-import org.example.project.article.data.Article
+import org.example.project.article.domain.Article
 
 sealed interface ArticleListAction {
     data class OnSearchQueryChange(val query: String): ArticleListAction

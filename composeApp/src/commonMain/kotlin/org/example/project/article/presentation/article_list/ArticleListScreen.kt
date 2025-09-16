@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -28,12 +27,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.example.project.article.data.Article
+import org.example.project.article.domain.Article
 import org.example.project.article.presentation.article_list.components.ArticleList
 import org.example.project.article.presentation.article_list.components.ArticleSearchBar
 import org.example.project.core.presentation.DarkBlue
@@ -62,10 +60,8 @@ fun ArticleListScreenRoot(
                 else -> Unit
             }
             viewModel.onAction(action)
-
         }
     )
-
 }
 
 

@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.example.project.article.data.Article
+import org.example.project.article.domain.Article
 
 @Composable
 fun ArticleList(
