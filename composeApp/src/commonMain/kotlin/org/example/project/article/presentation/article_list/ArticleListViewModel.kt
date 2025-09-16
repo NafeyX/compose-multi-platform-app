@@ -1,10 +1,11 @@
 package org.example.project.article.presentation.article_list
 
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class ArticleListViewModel  {
+class ArticleListViewModel() : ViewModel()  {
     private val _state = MutableStateFlow(ArticleListState())
     val state = _state.asStateFlow()
 
@@ -19,7 +20,9 @@ class ArticleListViewModel  {
                 }
             }
             is ArticleListAction.OnTabSelected -> {
-
+                _state.update {
+                    it.copy(selectedTabIndex = action.index)
+                }
             }
         }
     }
