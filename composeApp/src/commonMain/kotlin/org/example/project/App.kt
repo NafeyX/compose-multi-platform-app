@@ -1,6 +1,5 @@
 package org.example.project
 
-
 import androidx.compose.runtime.*
 import io.ktor.client.engine.HttpClientEngine
 import org.example.project.article.data.network.KtorRemoteArticleDataSource
@@ -9,19 +8,15 @@ import org.example.project.article.presentation.article_list.ArticleListScreenRo
 import org.example.project.article.presentation.article_list.ArticleListViewModel
 import org.example.project.core.data.HttpClientFactory
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable
 @Preview
-fun App(engine: HttpClientEngine) {
+fun App() {
+    val viewModel = koinViewModel<ArticleListViewModel>()
     ArticleListScreenRoot(
-        viewModel = remember { ArticleListViewModel(
-            articleRepository = DefaultArticleRepository(
-                remoteArticleDataSource = KtorRemoteArticleDataSource(
-                    httpClient = HttpClientFactory.create(engine)
-                )
-            )
-        )},
+        viewModel = viewModel,
         onArticleClick = {
 
         }

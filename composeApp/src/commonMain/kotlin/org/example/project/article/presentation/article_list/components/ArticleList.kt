@@ -29,7 +29,7 @@ fun ArticleList(
     ) {
         items(
             items = articles,
-            key = { it.id }
+            key = { it.url }
         ) { article ->
             ArticleListItem(
                 article = article,
